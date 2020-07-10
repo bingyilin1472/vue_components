@@ -23,7 +23,8 @@
          除此之外還要於component裡面新增props: []這個array attr/property，來告知要將這個attr置入prop
          array之中允許有多個prop，可允許multiple props，是寫你的localName進來
      -->
-    <AllFriends :friends="friends"/>
+    <!--  emit將事件送回來，然後這邊@delete去監聽，並且react去做deleteFriend() method  -->
+    <AllFriends :friends="friends" @delete="deleteFriend"/>
     <OnlineFriends :friends="friends"/>
     <!--
           這是沒有colon冒號，意思是沒有data-binding，表示props是一個一般string variable
@@ -66,6 +67,24 @@
           {name: 'Toad', online: true},
           {name: 'Bowser', online: false}
         ]
+      }
+    },
+    methods:{
+      // 因為這個事件有帶參數，因此需要一個parameter來承接
+      // 慣例上會叫做payload，但其實並沒有限制說一定要叫什麼
+      deleteFriend(payload){
+        // 這條只是測試看看，是否有抓到點下去的那個內容的content
+        // 要注意這個從child帶回來的實際上{}物件，若要真的拿出值要dot and key
+        // 否則會是{...}格式，也無法做boolean、compare比較
+        console.log(payload.name)
+        // 這明顯要用filter return結果蓋掉當前當前的friend data obj
+        // 參數 => { ... }，這是ES6風格的function，針對each friend與帶進來參數比較作回傳
+        // filter是針對回傳的True與False結果來斷定是否要保留那條資料
+        this.friends = this.friends.filter(friend => {
+            // 不等於的要TRUE保留下來
+            return friend.name !== payload.name
+        })
+
       }
     }
   }
